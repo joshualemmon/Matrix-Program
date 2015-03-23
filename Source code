@@ -1,0 +1,135 @@
+//include statements
+#include <vector>
+#include <iostream>
+#include <string>
+
+//namespace declaration
+using namespace std;
+
+//class declaration
+
+//Matrix class will hold information about matrix like rows and columns, and the type. eg augmented, identity etc
+class Matrix
+{
+	public: 
+		Matrix(int r, int c, string mT, vector<vector<int>> v)
+		{
+			rows = r;
+			columns = c;
+			matrixType = mT;
+			values = v;
+		}
+		void setColumns(int c)
+		{
+			columns = c;
+		}
+		void setRows(int r)
+		{
+			rows = r;
+		}
+		void setMatrixType(string mT)
+		{
+			matrixType = mT;
+		}
+		void setValues(vector<vector<int>> v)
+		{
+			values = v;
+		}
+		int getColumns()
+		{
+			return columns;
+		}
+		int getRows()
+		{
+			return rows;
+		}
+		string getMatrixType()
+		{
+			return matrixType;
+		}
+		vector<vector<int>> getValues()
+		{
+			return values;
+		}
+private:
+	int rows;
+	int columns;
+	string matrixType;
+	vector<vector<int>> values;
+};
+
+//function declarations
+
+vector<vector<int>> matrixInput();//this function will allow a matrix to be inputted
+vector<vector<int>> matrixAddition();//this function will add two matrices
+vector<vector<int>> matrixMultiplication();//this function will multiply two matrices
+vector<vector<int>> matrixTrace();//this function will calculate the trace of a matrix
+vector<vector<int>> matrixTranspose();//this function will calculate the transpose of a matrix
+vector<vector<int>> matrixInverse();//this function will calculate the inverse of a matrix
+
+
+int main()
+{
+	int choice;
+	cout << "1: Matrix Addition" << endl;
+	cout << "2: Matrix Multiplication" << endl;
+	cout << "3: Trace" << endl;
+	cout << "4: Transpose" << endl;
+	cout << "5: Inverse" << endl;
+	cout << "0: Exit" << endl;
+	cin >> choice;
+
+	if (choice == 1)
+	{
+		matrixAddition();
+	}
+	else if(choice == 2)
+	{
+		matrixMultiplication();
+	}
+	else if (choice == 3)
+	{
+		matrixTrace();
+	}
+	else if (choice == 4)
+	{
+		matrixTranspose();
+	}
+	else if (choice == 5)
+	{
+		matrixInverse();
+	}
+	else if (choice == 0)
+	{
+		cout << "Exiting..." << endl;
+		exit(0);
+	}
+	return 0;
+}
+
+vector<vector<int>> matrixInput()
+{
+	unsigned int rows, columns;
+	//prompt for the size of the matrices
+	cout << "Enter rows: ";
+	cin >> rows;
+	cout << "Enter columns: ";
+	cin >> columns;
+	int input;
+	vector<vector<int>> matrix;
+	vector<int> temp;
+
+	cout << "Enter first matrix: " << endl;
+
+	for (unsigned int i = 0; i < rows; i++)
+	{
+		for (unsigned int j = 0; j < columns; j++)
+		{
+			cin >> input;
+			temp.push_back(input);
+		}
+		matrix.push_back(temp);
+		temp.clear();
+	}
+	return matrix;
+}
