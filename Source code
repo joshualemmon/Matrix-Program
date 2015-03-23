@@ -12,7 +12,7 @@ using namespace std;
 class Matrix
 {
 public:
-	Matrix(int r, int c, string mT, vector<vector<double>> v)
+	Matrix(int r, int c, string mT, vector<vector<string>> v)
 	{
 		rows = r;
 		columns = c;
@@ -31,7 +31,7 @@ public:
 	{
 		matrixType = mT;
 	}
-	void setValues(vector<vector<double>> v)
+	void setValues(vector<vector<string>> v)
 	{
 		values = v;
 	}
@@ -47,7 +47,7 @@ public:
 	{
 		return matrixType;
 	}
-	vector<vector<double>> getValues()
+	vector<vector<string>> getValues()
 	{
 		return values;
 	}
@@ -55,7 +55,7 @@ private:
 	int rows;
 	int columns;
 	string matrixType;
-	vector<vector<double>> values;
+	vector<vector<string>> values;
 };
 
 //function declarations
@@ -82,7 +82,8 @@ int main()
 		cout << "3: Matrix Multiplication" << endl;
 		cout << "4: Trace" << endl;
 		cout << "5: Transpose" << endl;
-		cout << "6: Inverse" << endl;
+		cout << "6: Determinant" << endl;
+		cout << "7: Inverse" << endl;
 		cout << "0: Exit" << endl;
 		cout << "\nSelect a menu option: ";
 		cin >> choice;
@@ -108,6 +109,11 @@ int main()
 			matrixTranspose();
 		}
 		else if (choice == 6)
+		{
+			vector<vector<double>> m = matrixInput();
+			calculateDeterminant(m);
+		}
+		else if (choice == 7)
 		{
 			matrixInverse();
 		}
@@ -333,11 +339,21 @@ int matrixInverse()
 	vector<vector<double>> inverse;
 	vector<double> temp;
 	double determinant = calculateDeterminant(matrix);
-	for (unsigned int i = 0; i < matrix.size(); i++)
+	int xSize = matrix.size();
+	int ySize = matrix[0].size();
+	if (determinant != 0.0 && xSize == 2 && ySize == 2)
 	{
-		for (unsigned int j = 0; j < matrix[i].size(); j++)
+		double temp = matrix[0][0];
+		matrix[0][0] = matrix[1][1];
+		matrix[1][1] = temp;
+		matrix[0][1] *= -1.0;
+		matrix[1][0] *= -1.0;
+		for (int i = 0; i < xSize; i++)
 		{
-			matrix[i][j] = (1 / determinant)*matrix[i][j];
+			for (int j = 0; j < ySize; j++)
+			{
+				matrix[i][j] *= (1 / determinant);
+			}
 		}
 	}
 	cout << "Inverse is: " << endl;
@@ -347,30 +363,28 @@ int matrixInverse()
 }
 double calculateDeterminant(vector<vector<double>> matrix)
 {
-	int xSize = 0;
-	int ySize = 0;
+	int xSize = matrix.size();
+	int ySize = matrix[0].size();
 	double determinant;
-	for (unsigned int i = 0; i < matrix.size(); i++)
-	{
-		for (unsigned int j = 0; j < matrix[i].size(); j++)
-		{
-			ySize++;
-		}
-		xSize++;
-		break;
-	}
+	
 	if (xSize == 2 && ySize == 2)
 	{
 		determinant = matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
-		cout << determinant;
+		cout << "\nDeterminant is: " << determinant << "\n" << endl;
 		return determinant;
 	}
 	else if (xSize == 3 && ySize == 3)
 	{
-		determinant = matrix[0][0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1]) - matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0]) + matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
+		determinant = matrix[0][0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1])
+						+ matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0])
+						+ matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
+		cout << "\nDeterminant is: " << determinant << "\n" << endl;
 		return determinant;
 	}
-	return 0.0;
+	else
+	{
+		return 0.0;
+	}
 }
 int outputMatrix(vector<vector<double>> matrix)
 {
