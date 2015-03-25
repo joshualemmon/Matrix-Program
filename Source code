@@ -12,224 +12,50 @@ using namespace std;
 class Matrix
 {
 public:
-	Matrix(int r, int c, string mT, vector<vector<string>> v)
+	Matrix();
+	~Matrix();
+	Matrix(int r, int c, vector<vector<string>> v)
 	{
 		rows = r;
 		columns = c;
-		matrixType = mT;
 		values = v;
 	}
-	void setColumns(int c)
-	{
-		columns = c;
-	}
-	void setRows(int r)
-	{
-		rows = r;
-	}
-	void setMatrixType(string mT)
-	{
-		matrixType = mT;
-	}
+	void setColumns(int c){columns = c;}
+	void setRows(int r){rows = r;}
 	void setValues(vector<vector<string>> v)
 	{
 		values = v;
 	}
-	int getColumns()
-	{
-		return columns;
-	}
-	int getRows()
-	{
-		return rows;
-	}
-	string getMatrixType()
-	{
-		return matrixType;
-	}
-	vector<vector<string>> getValues()
-	{
-		return values;
-	}
+	int getColumns(){return columns;}
+	int getRows(){return rows;}
+	vector<vector<string>> getValues(){return values;}
+	int matrixMultiplication();//this function will multiply two matrices
+	int matrixTrace();//this function will calculate the trace of a matrix
+	int matrixTranspose();//this function will calculate the transpose of a matrix
+	int matrixInverse();//this function will calculate the inverse of a matrix
+	void outputMatrix();//outputs a matrix to the user
+	double calculateDeterminant(vector<vector<double>> matrix);//calculates the determinant of a matrix
+	Matrix& operator+=(Matrix &right);
+	Matrix& operator-=(Matrix &right);
+
 private:
-	int rows;
-	int columns;
-	string matrixType;
+	unsigned int rows;
+	unsigned int columns;
 	vector<vector<string>> values;
 };
-
-//function declarations
-
-vector<vector<double>> matrixInput();//this function will allow a matrix to be inputted
-int matrixAddition();//this function will add two matrices
-int matrixSubtraction();//this function will subtract two matrices
-int matrixMultiplication();//this function will multiply two matrices
-int matrixTrace();//this function will calculate the trace of a matrix
-int matrixTranspose();//this function will calculate the transpose of a matrix
-int matrixInverse();//this function will calculate the inverse of a matrix
-int outputMatrix(vector<vector<double>> matrix);//outputs a matrix to the user
-double calculateDeterminant(vector<vector<double>> matrix);//calculates the determinant of a matrix
-
-
-int main()
+Matrix::Matrix()
 {
-	bool cont = true;
-	while (cont)
-	{
-		int choice;
-		cout << "1: Matrix Addition" << endl;
-		cout << "2: Matrix Subtraction" << endl;
-		cout << "3: Matrix Multiplication" << endl;
-		cout << "4: Trace" << endl;
-		cout << "5: Transpose" << endl;
-		cout << "6: Determinant" << endl;
-		cout << "7: Inverse" << endl;
-		cout << "0: Exit" << endl;
-		cout << "\nSelect a menu option: ";
-		cin >> choice;
-
-		if (choice == 1)
-		{
-			matrixAddition();
-		}
-		else if (choice == 2)
-		{
-			matrixSubtraction();
-		}
-		else if (choice == 3)
-		{
-			matrixMultiplication();
-		}
-		else if (choice == 4)
-		{
-			matrixTrace();
-		}
-		else if (choice == 5)
-		{
-			matrixTranspose();
-		}
-		else if (choice == 6)
-		{
-			vector<vector<double>> m = matrixInput();
-			calculateDeterminant(m);
-		}
-		else if (choice == 7)
-		{
-			matrixInverse();
-		}
-		else if (choice == 0)
-		{
-			cout << "\nExiting..." << endl;
-			exit(1);
-		}
-	}
-	return 0;
+	vector<string> temp;
+	temp.push_back("");
+	rows = 0;
+	columns = 0;
+	values.push_back(temp);
 }
-
-//function definitions
-vector<vector<double>> matrixInput()
+Matrix::~Matrix()
 {
-	unsigned int rows, columns;
-	//prompt for the size of the matrices
-	cout << "\nEnter rows: ";
-	cin >> rows;
-	cout << "\nEnter columns: ";
-	cin >> columns;
-	//variable to hold the inputted value
-	int input;
-	//initializing matrix
-	vector<vector<double>> matrix;
-	//temp vector to add to the matrix 
-	vector<double> temp;
 
-	//prompt for the matrix input
-	cout << "\nEnter matrix: " << endl;
-
-	//this loop will take an inputted vector and add it as a line to the matrix
-	for (unsigned int i = 0; i < rows; i++)
-	{
-		for (unsigned int j = 0; j < columns; j++)
-		{
-			cin >> input;//get input from user
-			temp.push_back(input);//adds input to temp vector
-		}
-		matrix.push_back(temp);//adds the temp vector to the matrix
-		temp.clear();//clears the temp vector for the next row in the matrix
-	}
-	return matrix;//returns the inputted matrix
 }
-int matrixAddition()
-{
-	//declaring the matrices that will be used
-	vector<vector<double>> matrixA = matrixInput();
-	vector<vector<double>> matrixB = matrixInput();
-	vector<vector<double>> addedMatrix;
-	//temp vector to add as a row to the added matrices vector
-	vector<double> temp;
-	if (matrixA.size() == matrixB.size())//checks if matrices have same # of rows
-	{
-		for (unsigned int i = 0; i < matrixA.size(); i++)
-		{
-			if (matrixA[i].size() == matrixB[i].size())//checks if matrices have the same # of columns
-			{
-				for (unsigned int j = 0; j < matrixA[i].size(); j++)
-				{
-					temp.push_back(matrixA[i][j] + matrixB[i][j]);//sums the matrics at current element then adds it to the temp vector
-				}
-				addedMatrix.push_back(temp);//adds the temp vector to the added matrix vector
-				temp.clear();//clears the temp vector
-			}
-			else
-			{
-				cout << "\nMatrices are different sizes.\n" << endl;//error message if matrices have different sizes
-				return 0;
-			}
-		}
-	}
-	else
-	{
-		cout << "\nMatrices are different sizes.\n" << endl;
-		return 0;
-	}
-	outputMatrix(addedMatrix);//calls output function to display the calculated matrix
-	return 0;
-}
-int matrixSubtraction()
-{
-	//declaring the matrices that will be used
-	vector<vector<double>> matrixA = matrixInput();
-	vector<vector<double>> matrixB = matrixInput();
-	vector<vector<double>> addedMatrix;
-	//temp vector to add as a row to the added matrices vector
-	vector<double> temp;
-	if (matrixA.size() == matrixB.size())//checks if matrices have same # of rows
-	{
-		for (unsigned int i = 0; i < matrixA.size(); i++)
-		{
-			if (matrixA[i].size() == matrixB[i].size())//checks if matrices have the same # of columns
-			{
-				for (unsigned int j = 0; j < matrixA[i].size(); j++)
-				{
-					temp.push_back(matrixA[i][j] - matrixB[i][j]);//subtracts the matrices at current element then adds it to the temp vector
-				}
-				addedMatrix.push_back(temp);//adds the temp vector to the added matrix vector
-				temp.clear();//clears the temp vector
-			}
-			else
-			{
-				cout << "\nMatrices are different sizes.\n" << endl;//error message if matrices have different sizes
-				return 0;
-			}
-		}
-	}
-	else
-	{
-		cout << "\nMatrices are different sizes.\n" << endl;
-		return 0;
-	}
-	outputMatrix(addedMatrix);//calls the output function to display the calculated matrix
-	return 0;
-}
+/*
 int matrixMultiplication()
 {
 	//declaring the matrices that will be used
@@ -265,29 +91,29 @@ int matrixMultiplication()
 	outputMatrix(productMatrix);//calls output function to display the calculated matrix
 	return 0;
 }
-int matrixTrace()
+int Matrix::matrixTrace()
 {
 	vector<vector<double>> matrix = matrixInput();//gets matrix
-	double trace=0;//setting variable to hold the trace
+	double trace = 0;//setting variable to hold the trace
 
-		for (unsigned int i = 0; i < matrix.size(); i++)
+	for (unsigned int i = 0; i < matrix.size(); i++)
+	{
+		for (unsigned int j = 0; j < matrix[i].size(); j++)
 		{
-			for (unsigned int j = 0; j < matrix[i].size(); j++)
+			if (matrix.size() != matrix[i].size())//if the inputted matrix isnt a square matrix error message will show
 			{
-				if (matrix.size() != matrix[i].size())//if the inputted matrix isnt a square matrix error message will show
-				{
-					cout << "\nError. Not a square matrix." << "\n" << endl;//error message if inputted matrix does not have a trace
-				}
-				if (i == j)//if the current element is on the diagnol
-				{
-					trace += matrix[i][j];//adds the current element to the trace sum
-				}
+				cout << "\nError. Not a square matrix." << "\n" << endl;//error message if inputted matrix does not have a trace
+			}
+			if (i == j)//if the current element is on the diagnol
+			{
+				trace += matrix[i][j];//adds the current element to the trace sum
 			}
 		}
+	}
 	cout << "\nTrace of matrix is " << trace << "\n" << endl;//outputs the trace of the matrix
 	return 0;
 }
-int matrixTranspose()
+int Matrix::matrixTranspose()
 {
 	vector<vector<double>> matrix = matrixInput();
 	vector<vector<double>> transpose;
@@ -326,16 +152,16 @@ int matrixTranspose()
 	{
 		for (unsigned int j = 0; j < matrix[i].size(); j++)
 		{
-			transpose[j][i] = matrix[i][j];		
+			transpose[j][i] = matrix[i][j];
 		}
 	}
 	outputMatrix(transpose);
 
 	return 0;
 }
-int matrixInverse()
+int Matrix::matrixInverse()
 {
-	vector<vector<double>> matrix= matrixInput();
+	vector<vector<double>> matrix = matrixInput();
 	vector<vector<double>> inverse;
 	vector<double> temp;
 	double determinant = calculateDeterminant(matrix);
@@ -361,12 +187,12 @@ int matrixInverse()
 
 	return 0;
 }
-double calculateDeterminant(vector<vector<double>> matrix)
+double Matrix::calculateDeterminant(vector<vector<double>> matrix)
 {
 	int xSize = matrix.size();
 	int ySize = matrix[0].size();
 	double determinant;
-	
+
 	if (xSize == 2 && ySize == 2)
 	{
 		determinant = matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
@@ -376,8 +202,8 @@ double calculateDeterminant(vector<vector<double>> matrix)
 	else if (xSize == 3 && ySize == 3)
 	{
 		determinant = matrix[0][0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1])
-						+ matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0])
-						+ matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
+			+ matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0])
+			+ matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
 		cout << "\nDeterminant is: " << determinant << "\n" << endl;
 		return determinant;
 	}
@@ -385,17 +211,167 @@ double calculateDeterminant(vector<vector<double>> matrix)
 	{
 		return 0.0;
 	}
-}
-int outputMatrix(vector<vector<double>> matrix)
+}*/
+void Matrix::outputMatrix()
 {
 	cout << "\n" << endl;
-	for (unsigned int i = 0; i < matrix.size(); i++)//this loop will output the matrix
+	for (unsigned int i = 0; i < rows; i++)//this loop will output the matrix
 	{
-		for (unsigned int j = 0; j < matrix[i].size(); j++)
+		for (unsigned int j = 0; j < columns; j++)
 		{
-			cout << matrix[i][j] << " ";
+			cout << values[i][j] << " ";
 		}
 		cout << "\n" << endl;
 	}
+}
+Matrix& Matrix::operator+=(Matrix &right)
+{
+	if (rows == right.getRows() && columns == right.getColumns())
+	{
+		for (unsigned int i = 0; i < rows; i++)
+		{
+			for (unsigned int j = 0; j < columns; j++)
+			{
+				values[i][j] = to_string(stoi(values[i][j]) + stoi(right.values[i][j]));
+			}
+		}
+	}
+	else
+	{
+		cout << "Error matrices are different sizes." << endl;
+	}
+	return *this;
+}
+Matrix& Matrix::operator-=(Matrix &right)
+{
+	if (rows == right.getRows() && columns == right.getColumns())
+	{
+		for (unsigned int i = 0; i < rows; i++)
+		{
+			for (unsigned int j = 0; j < columns; j++)
+			{
+				values[i][j] = to_string(stoi(values[i][j]) - stoi(right.values[i][j]));
+			}
+		}
+	}
+	else
+	{
+		cout << "Error matrices are different sizes." << endl;
+	}
+	return *this;
+}
+vector<vector<string>> matrixInput(unsigned int x,unsigned int y);//this function will allow a matrix to be inputted
+
+int main()
+{
+	vector<vector<string>> temp;
+	unsigned int x;
+	unsigned int y;
+	bool cont = true;
+	while (cont)
+	{
+		int choice;
+		cout << "1: Matrix Addition" << endl;
+		cout << "2: Matrix Subtraction" << endl;
+		cout << "3: Matrix Multiplication" << endl;
+		cout << "4: Trace" << endl;
+		cout << "5: Transpose" << endl;
+		cout << "6: Determinant" << endl;
+		cout << "7: Inverse" << endl;
+		cout << "0: Exit" << endl;
+		cout << "\nSelect a menu option: ";
+		cin >> choice;
+
+		if (choice == 1)
+		{
+			cout << "Matrix A: " << endl << "Enter rows: ";
+			cin >> x;
+			cout << "Enter columns: ";
+			cin >> y;
+			temp = matrixInput(x,y);
+			Matrix *A = new Matrix(x, y, temp);
+			cout << "Matrix B: " << endl << "Enter rows: ";
+			cin >> x;
+			cout << "Enter columns: ";
+			cin >> y;
+			temp = matrixInput(x, y);
+			Matrix *B = new Matrix(x, y, temp);
+			*A += *B;
+			A->outputMatrix();
+			delete A;
+			delete B;
+		}
+		else if (choice == 2)
+		{
+			cout << "Matrix A: " << endl << "Enter rows: ";
+			cin >> x;
+			cout << "Enter columns: ";
+			cin >> y;
+			temp = matrixInput(x, y);
+			Matrix *A = new Matrix(x, y, temp);
+			cout << "Matrix B: " << endl << "Enter rows: ";
+			cin >> x;
+			cout << "Enter columns: ";
+			cin >> y;
+			temp = matrixInput(x, y);
+			Matrix *B = new Matrix(x, y, temp);
+			*A -= *B;
+			A->outputMatrix();
+			delete A;
+			delete B;
+		}
+	/*	else if (choice == 3)
+		{
+			matrixMultiplication();
+		}
+		else if (choice == 4)
+		{
+			matrixTrace();
+		}
+		else if (choice == 5)
+		{
+			matrixTranspose();
+		}
+		else if (choice == 6)
+		{
+			vector<vector<double>> m = matrixInput();
+			calculateDeterminant(m);
+		}
+		else if (choice == 7)
+		{
+			matrixInverse();
+		}*/
+		else if (choice == 0)
+		{
+			cout << "\nExiting..." << endl;
+			exit(1);
+		}
+	}
 	return 0;
+}
+
+vector<vector<string>> matrixInput(unsigned int x, unsigned int y)
+{
+	//variable to hold the inputted value
+	string input;
+	//initializing matrix
+	vector<vector<string>> matrix;
+	//temp vector to add to the matrix 
+	vector<string> temp;
+
+	//prompt for the matrix input
+	cout << "\nEnter matrix: " << endl;
+
+	//this loop will take an inputted vector and add it as a line to the matrix
+	for (unsigned int i = 0; i < x; i++)
+	{
+		for (unsigned int j = 0; j < y; j++)
+		{
+			cin >> input;//get input from user
+			temp.push_back(input);//adds input to temp vector
+		}
+		matrix.push_back(temp);//adds the temp vector to the matrix
+		temp.clear();//clears the temp vector for the next row in the matrix
+	}
+	return matrix;//returns the inputted matrix
 }
