@@ -2,6 +2,8 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#include <iomanip>
+#include <stdlib.h>
 
 //namespace declaration
 using namespace std;
@@ -20,23 +22,27 @@ public:
 		columns = c;
 		values = v;
 	}
-	void setColumns(int c){columns = c;}
-	void setRows(int r){rows = r;}
+	//mutator functions
+	void setColumns(int c){ columns = c; }
+	void setRows(int r){ rows = r; }
 	void setValues(vector<vector<string>> v)
 	{
 		values = v;
 	}
-	int getColumns(){return columns;}
-	int getRows(){return rows;}
-	vector<vector<string>> getValues(){return values;}
-	int matrixMultiplication();//this function will multiply two matrices
+	//accessor functions
+	int getColumns(){ return columns; }
+	int getRows(){ return rows; }
+	vector<vector<string>> getValues(){ return values; }
+	string getValue(int i, int j){ return values[i][j]; }
+	//member functions
 	int matrixTrace();//this function will calculate the trace of a matrix
 	int matrixTranspose();//this function will calculate the transpose of a matrix
 	int matrixInverse();//this function will calculate the inverse of a matrix
 	void outputMatrix();//outputs a matrix to the user
 	double calculateDeterminant(vector<vector<double>> matrix);//calculates the determinant of a matrix
-	Matrix& operator+=(Matrix &right);
-	Matrix& operator-=(Matrix &right);
+	Matrix& operator+=(Matrix &right);//operator that will add two matrices
+	Matrix& operator-=(Matrix &right);//operator that will subtract two matrices
+	Matrix& operator*=(Matrix &right);//operator that will multiply two matrices
 
 private:
 	unsigned int rows;
@@ -55,162 +61,128 @@ Matrix::~Matrix()
 {
 
 }
+
 /*
-int matrixMultiplication()
-{
-	//declaring the matrices that will be used
-	vector<vector<double>> matrixA = matrixInput();
-	vector<vector<double>> matrixB = matrixInput();
-	vector<vector<double>> productMatrix;
-	//temp vector to add as a row to the added matrices vector
-	vector<double> temp;
-	double sum = 0;
-	for (unsigned int i = 0; i < matrixA.size(); i++)
-	{
-		if (matrixA[i].size() == matrixB.size())//checks if matrices have the same # of columns
-		{
-			for (unsigned int j = 0; j < matrixA[i].size(); j++)
-			{
-				for (unsigned int inner = 0; inner < matrixB.size(); inner++)
-				{
-					sum += matrixA[i][inner] * matrixB[inner][j];
-					cout << "A[" << i << "][" << inner << "] * B[" << i << "][" << inner << "]" << endl;
-				}
-				temp.push_back(sum);//adds the sum to the temp vetcor
-				sum = 0;//resets the sum
-			}
-			productMatrix.push_back(temp);//adds the temp vector to the added matrix vector
-			temp.clear();//clears the temp vector
-		}
-		else
-		{
-			cout << "\nMatrices are different sizes.\n" << endl;//error message if matrices have different sizes
-			return 0;
-		}
-	}
-	outputMatrix(productMatrix);//calls output function to display the calculated matrix
-	return 0;
-}
 int Matrix::matrixTrace()
 {
-	vector<vector<double>> matrix = matrixInput();//gets matrix
-	double trace = 0;//setting variable to hold the trace
+vector<vector<double>> matrix = matrixInput();//gets matrix
+double trace = 0;//setting variable to hold the trace
 
-	for (unsigned int i = 0; i < matrix.size(); i++)
-	{
-		for (unsigned int j = 0; j < matrix[i].size(); j++)
-		{
-			if (matrix.size() != matrix[i].size())//if the inputted matrix isnt a square matrix error message will show
-			{
-				cout << "\nError. Not a square matrix." << "\n" << endl;//error message if inputted matrix does not have a trace
-			}
-			if (i == j)//if the current element is on the diagnol
-			{
-				trace += matrix[i][j];//adds the current element to the trace sum
-			}
-		}
-	}
-	cout << "\nTrace of matrix is " << trace << "\n" << endl;//outputs the trace of the matrix
-	return 0;
+for (unsigned int i = 0; i < matrix.size(); i++)
+{
+for (unsigned int j = 0; j < matrix[i].size(); j++)
+{
+if (matrix.size() != matrix[i].size())//if the inputted matrix isnt a square matrix error message will show
+{
+cout << "\nError. Not a square matrix." << "\n" << endl;//error message if inputted matrix does not have a trace
+}
+if (i == j)//if the current element is on the diagnol
+{
+trace += matrix[i][j];//adds the current element to the trace sum
+}
+}
+}
+cout << "\nTrace of matrix is " << trace << "\n" << endl;//outputs the trace of the matrix
+return 0;
 }
 int Matrix::matrixTranspose()
 {
-	vector<vector<double>> matrix = matrixInput();
-	vector<vector<double>> transpose;
-	vector<double> temp;
-	int sumRows = 0;
-	int sumColumns = 0;
-	unsigned int rows;
-	unsigned int columns;
+vector<vector<double>> matrix = matrixInput();
+vector<vector<double>> transpose;
+vector<double> temp;
+int sumRows = 0;
+int sumColumns = 0;
+unsigned int rows;
+unsigned int columns;
 
-	//getting size of transpose matrix
-	for (unsigned int i = 0; i < matrix.size(); i++)
-	{
-		for (unsigned int j = 0; j < matrix[i].size(); j++)
-		{
-			sumRows++;
-		}
-		rows = sumRows;
-		sumRows = 0;
-		sumColumns++;
-	}
-	columns = sumColumns;
+//getting size of transpose matrix
+for (unsigned int i = 0; i < matrix.size(); i++)
+{
+for (unsigned int j = 0; j < matrix[i].size(); j++)
+{
+sumRows++;
+}
+rows = sumRows;
+sumRows = 0;
+sumColumns++;
+}
+columns = sumColumns;
 
-	//initializing transpose matrix 
-	for (unsigned int i = 0; i < rows; i++)
-	{
-		for (unsigned int j = 0; j < columns; j++)
-		{
-			temp.push_back(0);
-		}
-		transpose.push_back(temp);
-		temp.clear();
-	}
+//initializing transpose matrix
+for (unsigned int i = 0; i < rows; i++)
+{
+for (unsigned int j = 0; j < columns; j++)
+{
+temp.push_back(0);
+}
+transpose.push_back(temp);
+temp.clear();
+}
 
-	//swaps the rows and columns
-	for (unsigned int i = 0; i < matrix.size(); i++)
-	{
-		for (unsigned int j = 0; j < matrix[i].size(); j++)
-		{
-			transpose[j][i] = matrix[i][j];
-		}
-	}
-	outputMatrix(transpose);
+//swaps the rows and columns
+for (unsigned int i = 0; i < matrix.size(); i++)
+{
+for (unsigned int j = 0; j < matrix[i].size(); j++)
+{
+transpose[j][i] = matrix[i][j];
+}
+}
+outputMatrix(transpose);
 
-	return 0;
+return 0;
 }
 int Matrix::matrixInverse()
 {
-	vector<vector<double>> matrix = matrixInput();
-	vector<vector<double>> inverse;
-	vector<double> temp;
-	double determinant = calculateDeterminant(matrix);
-	int xSize = matrix.size();
-	int ySize = matrix[0].size();
-	if (determinant != 0.0 && xSize == 2 && ySize == 2)
-	{
-		double temp = matrix[0][0];
-		matrix[0][0] = matrix[1][1];
-		matrix[1][1] = temp;
-		matrix[0][1] *= -1.0;
-		matrix[1][0] *= -1.0;
-		for (int i = 0; i < xSize; i++)
-		{
-			for (int j = 0; j < ySize; j++)
-			{
-				matrix[i][j] *= (1 / determinant);
-			}
-		}
-	}
-	cout << "Inverse is: " << endl;
-	outputMatrix(matrix);
+vector<vector<double>> matrix = matrixInput();
+vector<vector<double>> inverse;
+vector<double> temp;
+double determinant = calculateDeterminant(matrix);
+int xSize = matrix.size();
+int ySize = matrix[0].size();
+if (determinant != 0.0 && xSize == 2 && ySize == 2)
+{
+double temp = matrix[0][0];
+matrix[0][0] = matrix[1][1];
+matrix[1][1] = temp;
+matrix[0][1] *= -1.0;
+matrix[1][0] *= -1.0;
+for (int i = 0; i < xSize; i++)
+{
+for (int j = 0; j < ySize; j++)
+{
+matrix[i][j] *= (1 / determinant);
+}
+}
+}
+cout << "Inverse is: " << endl;
+outputMatrix(matrix);
 
-	return 0;
+return 0;
 }
 double Matrix::calculateDeterminant(vector<vector<double>> matrix)
 {
-	int xSize = matrix.size();
-	int ySize = matrix[0].size();
-	double determinant;
+int xSize = matrix.size();
+int ySize = matrix[0].size();
+double determinant;
 
-	if (xSize == 2 && ySize == 2)
-	{
-		determinant = matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
-		cout << "\nDeterminant is: " << determinant << "\n" << endl;
-		return determinant;
-	}
-	else if (xSize == 3 && ySize == 3)
-	{
-		determinant = matrix[0][0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1])
-			+ matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0])
-			+ matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
-		cout << "\nDeterminant is: " << determinant << "\n" << endl;
-		return determinant;
-	}
-	else
-	{
-		return 0.0;
-	}
+if (xSize == 2 && ySize == 2)
+{
+determinant = matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+cout << "\nDeterminant is: " << determinant << "\n" << endl;
+return determinant;
+}
+else if (xSize == 3 && ySize == 3)
+{
+determinant = matrix[0][0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1])
++ matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0])
++ matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
+cout << "\nDeterminant is: " << determinant << "\n" << endl;
+return determinant;
+}
+else
+{
+return 0.0;
+}
 }*/
 void Matrix::outputMatrix()
 {
@@ -226,13 +198,13 @@ void Matrix::outputMatrix()
 }
 Matrix& Matrix::operator+=(Matrix &right)
 {
-	if (rows == right.getRows() && columns == right.getColumns())
+	if (rows == right.getRows() && columns == right.getColumns())//checking matrices are same size
 	{
 		for (unsigned int i = 0; i < rows; i++)
 		{
 			for (unsigned int j = 0; j < columns; j++)
 			{
-				values[i][j] = to_string(stoi(values[i][j]) + stoi(right.values[i][j]));
+				values[i][j] = to_string(stoi(values[i][j]) + stoi(right.values[i][j]));//adds values
 			}
 		}
 	}
@@ -240,17 +212,17 @@ Matrix& Matrix::operator+=(Matrix &right)
 	{
 		cout << "Error matrices are different sizes." << endl;
 	}
-	return *this;
+	return *this;//returns the added matrix
 }
 Matrix& Matrix::operator-=(Matrix &right)
 {
-	if (rows == right.getRows() && columns == right.getColumns())
+	if (rows == right.getRows() && columns == right.getColumns())//checking matrices are same size
 	{
 		for (unsigned int i = 0; i < rows; i++)
 		{
 			for (unsigned int j = 0; j < columns; j++)
 			{
-				values[i][j] = to_string(stoi(values[i][j]) - stoi(right.values[i][j]));
+				values[i][j] = to_string(stoi(values[i][j]) - stoi(right.values[i][j]));//subtracts values
 			}
 		}
 	}
@@ -258,9 +230,43 @@ Matrix& Matrix::operator-=(Matrix &right)
 	{
 		cout << "Error matrices are different sizes." << endl;
 	}
+	return *this;//returns the difference of the matrices
+}
+Matrix& Matrix::operator*=(Matrix& right)
+{
+	if (columns == right.getRows())//checking if the inner dimensions are the same
+	{
+		//temp vector to add as a row to the added matrices vector
+		vector<vector<string>> productMatrix;
+		vector<string> temp;
+		double sum = 0;
+		for (unsigned int i = 0; i < rows; i++)
+		{
+			for (unsigned int j = 0; j < columns; j++)
+			{
+				for (unsigned int inner = 0; inner < right.getRows(); inner++)
+				{
+					sum += stoi(values[i][inner]) * stoi(right.getValue(inner,j));
+					cout << "A[" << i << "][" << inner << "] * B[" << inner << "][" << j << "]" << endl;
+				}
+				cout << sum << endl;
+				temp.push_back(to_string(sum));//adds the sum to the temp vetcor
+				sum = 0;//resets the sum
+			}
+			productMatrix.push_back(temp);//adds the temp vector to the added matrix vector
+			temp.clear();//clears the temp vector
+		}
+		values = productMatrix;
+	}
+	else
+	{
+		cout << "\nMatrices are different sizes.\n" << endl;//error message if matrices have different sizes
+		Matrix *tempMatrix = new Matrix();
+		return *tempMatrix;
+	}
 	return *this;
 }
-vector<vector<string>> matrixInput(unsigned int x,unsigned int y);//this function will allow a matrix to be inputted
+vector<vector<string>> matrixInput(unsigned int x, unsigned int y);//this function will allow a matrix to be inputted
 
 int main()
 {
@@ -288,7 +294,7 @@ int main()
 			cin >> x;
 			cout << "Enter columns: ";
 			cin >> y;
-			temp = matrixInput(x,y);
+			temp = matrixInput(x, y);
 			Matrix *A = new Matrix(x, y, temp);
 			cout << "Matrix B: " << endl << "Enter rows: ";
 			cin >> x;
@@ -320,26 +326,42 @@ int main()
 			delete A;
 			delete B;
 		}
-	/*	else if (choice == 3)
+		else if (choice == 3)
 		{
-			matrixMultiplication();
+			cout << "Matrix A: " << endl << "Enter rows: ";
+			cin >> x;
+			cout << "Enter columns: ";
+			cin >> y;
+			temp = matrixInput(x, y);
+			Matrix *A = new Matrix(x, y, temp);
+			cout << "Matrix B: " << endl << "Enter rows: ";
+			cin >> x;
+			cout << "Enter columns: ";
+			cin >> y;
+			temp = matrixInput(x, y);
+			Matrix *B = new Matrix(x, y, temp);
+			*A *= *B;
+			A->outputMatrix();
+			delete A;
+			delete B;
 		}
+		/*
 		else if (choice == 4)
 		{
-			matrixTrace();
+		matrixTrace();
 		}
 		else if (choice == 5)
 		{
-			matrixTranspose();
+		matrixTranspose();
 		}
 		else if (choice == 6)
 		{
-			vector<vector<double>> m = matrixInput();
-			calculateDeterminant(m);
+		vector<vector<double>> m = matrixInput();
+		calculateDeterminant(m);
 		}
 		else if (choice == 7)
 		{
-			matrixInverse();
+		matrixInverse();
 		}*/
 		else if (choice == 0)
 		{
